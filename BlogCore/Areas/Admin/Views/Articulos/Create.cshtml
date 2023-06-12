@@ -1,0 +1,45 @@
+@model BlogCore.Models.ViewModels.ArticuloViewModel
+@{
+    ViewData["Title"] = "Crear Articulo";
+}
+<div class="container">
+    <main>
+        <div class="col-md-12 mt-4">
+            <h4 h4 class="mb-3">Crear Articulo</h4>
+            <form class="row g-3" asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="col-md-12">
+                    <label asp-for="Articulo.Nombre" class="form-label"></label>
+                    <input asp-for="Articulo.Nombre" class="form-control border border-secondary" placeholder="Nombre del Articulo" required />
+                    <span asp-validation-for="Articulo.Nombre" class="text-danger"></span>
+                </div>
+                <div class="col-md-12">
+                    <label asp-for="Articulo.Descripcion" class="form-label"></label>
+                    <textarea asp-for="Articulo.Descripcion" class="form-control border border-secondary" placeholder="Descripcion del Articulo" rows="10"></textarea>
+                    <span asp-validation-for="Articulo.Descripcion" class="text-danger"></span>
+                </div>
+                <div class="col-md-12">
+                    <label for="Categoria" class="form-label">Categoria</label>
+                    @Html.DropDownListFor(model => model.Articulo.CategoriaId, Model.ListaCategorias, "Seleccione una Categoria", new { @class = "form-control border border-secondary" })
+                </div>
+                <div class="col-md-12">
+                    <label asp-for="Articulo.UrlImagen" class="form-label"></label>
+                    <input type="file" id="subidaArchivo" name="subidaArchivo" class="form-control border border-secondary" />
+                    <span asp-validation-for="Articulo.UrlImagen" class="text-danger"></span>
+                </div>
+                <partial name="_VistaCrearVolver" />
+            </form>
+        </div>
+    </main>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.tiny.cloud/1/onq6ujf48divqg0h66c00i6itxr6pta29zlu57j5a5xagd1x/tinymce/5/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            plugins: 'lists',
+            menubar: false
+        });
+    </script>
+}

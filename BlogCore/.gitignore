@@ -17,3 +17,7 @@ appsettings.json
 appsettings.Development.json
 # app.db
 app.db
+# wwwroot/imagenes/articulos/*
+wwwroot/imagenes/articulos/*
+# wwwroot/imagenes/sliders/*
+wwwroot/imagenes/sliders/*

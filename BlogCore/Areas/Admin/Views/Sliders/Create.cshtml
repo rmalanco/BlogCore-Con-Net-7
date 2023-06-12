@@ -1,0 +1,25 @@
+@model BlogCore.Models.Slider
+@{
+    ViewData["Title"] = "Crear Slider";
+}
+<div class="container">
+    <main>
+        <div class="col-md-12 mt-4">
+            <h4 h4 class="mb-3">Crear Categoria</h4>
+            <form class="row g-3" asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="col-md-8">
+                    <label asp-for="Nombre" class="form-label"></label>
+                    <input asp-for="Nombre" class="form-control border border-secondary" placeholder="Nombre de la categoria" required />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="UrlImagen" class="form-label"></label>
+                    <input type="file" id="subidaArchivo" name="subidaArchivo" class="form-control border border-secondary" />
+                    <span asp-validation-for="UrlImagen" class="text-danger"></span>
+                </div>
+                <partial name="_VistaCrearVolver" />
+            </form>
+        </div>
+    </main>
+</div>
