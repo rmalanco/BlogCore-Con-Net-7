@@ -14,6 +14,8 @@ namespace BlogCore.Models
         [Display(Name = "Nombre")]
         [StringLength(50, MinimumLength = 3, ErrorMessage = "El nombre debe tener entre 3 y 50 caracteres")]
         public string Nombre { get; set; }
+        [Required]
+        [Display(Name = "Estado")]
         public bool Estado { get; set; }
 
         [DataType(DataType.ImageUrl)]

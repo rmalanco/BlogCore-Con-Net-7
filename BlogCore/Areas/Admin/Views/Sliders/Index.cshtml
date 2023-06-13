@@ -20,6 +20,7 @@
                         <tr>
                             <th>Id</th>
                             <th>Nombre</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -44,6 +45,21 @@
                 "columns": [
                     { "data": "id", "width": "5%" },
                     { "data": "nombre", "width": "80%" },
+                    {
+                        "data": "estado",
+                        "render": function (data) {
+                            if (data == true) {
+                                return `<div class="text-center">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        </div>`;
+                            }
+                            else {
+                                return `<div class="text-center">
+                                            <i class="fas fa-times-circle text-danger"></i>
+                                        </div>`;
+                            }
+                        }, "width": "5%"
+                    },
                     {
                         "data": "id",
                         "render": function (data) {

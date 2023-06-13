@@ -75,21 +75,17 @@ namespace BlogCore.Areas.Admin.Controllers
                             archivos[0].CopyTo(fileStreams);
                         }
                         articuloViewModel.Articulo.UrlImagen = @"\imagenes\articulos\" + nombreArchivo + extension;
-                        articuloViewModel.Articulo.FechaCreacion = DateTime.Now;
-
-                        _contenedorTrabajo.Articulo.Add(articuloViewModel.Articulo);
-                        _contenedorTrabajo.Save();
-                        return RedirectToAction(nameof(Index));
                     }
                 }
                 else
                 {
                     articuloViewModel.Articulo.UrlImagen = @"\imagenes\articulos\default.png";
-                    articuloViewModel.Articulo.FechaCreacion = DateTime.Now;
-                    _contenedorTrabajo.Articulo.Add(articuloViewModel.Articulo);
-                    _contenedorTrabajo.Save();
-                    return RedirectToAction(nameof(Index));
                 }
+
+                articuloViewModel.Articulo.FechaCreacion = DateTime.Now;
+                _contenedorTrabajo.Articulo.Add(articuloViewModel.Articulo);
+                _contenedorTrabajo.Save();
+                return RedirectToAction(nameof(Index));
             }
             articuloViewModel.ListaCategorias = _contenedorTrabajo.Categoria.GetListaCategorias();
             return View(articuloViewModel);

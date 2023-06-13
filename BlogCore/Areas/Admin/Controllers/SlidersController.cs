@@ -59,27 +59,35 @@ namespace BlogCore.Areas.Admin.Controllers
                     ModelState.AddModelError("", "El slider ya existe");
                     return View(slider);
                 }
-                else
+
+                string rutaPrincipal = _hostEnvironment.WebRootPath;
+                var archivos = HttpContext.Request.Form.Files;
+
+                if (archivos.Count > 0) // Hay imagen
                 {
-                    string rutaPrincipal = _hostEnvironment.WebRootPath;
-                    var archivos = HttpContext.Request.Form.Files;
                     if (slider.Id == 0)
                     {
                         // Nuevo slider
                         string nombreArchivo = Guid.NewGuid().ToString();
                         var subidas = Path.Combine(rutaPrincipal, @"imagenes\sliders");
                         var extension = Path.GetExtension(archivos[0].FileName);
+
                         using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension), FileMode.Create))
                         {
                             archivos[0].CopyTo(fileStreams);
                         }
                         slider.UrlImagen = @"\imagenes\sliders\" + nombreArchivo + extension;
-
-                        _contenedorTrabajo.Slider.Add(slider);
-                        _contenedorTrabajo.Save();
-                        return RedirectToAction(nameof(Index));
                     }
                 }
+                else
+                {
+                    // No hay imagen
+                    slider.UrlImagen = @"\imagenes\sliders\default.png";
+                }
+                slider.Estado = true; // false es inactivo y true es activo
+                _contenedorTrabajo.Slider.Add(slider);
+                _contenedorTrabajo.Save();
+                return RedirectToAction(nameof(Index));
             }
             return View(slider);
         }
@@ -96,42 +104,50 @@ namespace BlogCore.Areas.Admin.Controllers
                     ModelState.AddModelError("", "Ya existe un slider con ese nombre");
                     return View(slider);
                 }
-                else
+
+                string rutaPrincipal = _hostEnvironment.WebRootPath;
+                var archivos = HttpContext.Request.Form.Files;
+                var sliderDesdeDb = _contenedorTrabajo.Slider.Get(slider.Id);
+
+                if (archivos.Count > 0) // Hay imagen
                 {
-                    string rutaPrincipal = _hostEnvironment.WebRootPath;
-                    var archivos = HttpContext.Request.Form.Files;
-                    var sliderDesdeDb = _contenedorTrabajo.Slider.Get(slider.Id);
-                    if (archivos.Count > 0)
+                    // Nuevo slider
+                    string nombreArchivo = Guid.NewGuid().ToString();
+                    var subidas = Path.Combine(rutaPrincipal, @"imagenes\sliders");
+                    var extension = Path.GetExtension(archivos[0].FileName);
+                    if (sliderDesdeDb.UrlImagen != @"\imagenes\sliders\default.png") // Si no es la imagen por defecto
                     {
-                        // Editar imagen
-                        string nombreArchivo = Guid.NewGuid().ToString();
-                        var subidas = Path.Combine(rutaPrincipal, @"imagenes\sliders");
-                        var extension = Path.GetExtension(archivos[0].FileName);
-
-                        var nuevaExtension = Path.GetExtension(archivos[0].FileName);
-
-                        var rutaImagen = Path.Combine(rutaPrincipal, sliderDesdeDb.UrlImagen.TrimStart('\\'));
-
-                        if (System.IO.File.Exists(rutaImagen))
-                        {
-                            System.IO.File.Delete(rutaImagen);
-                        }
-
-                        using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + nuevaExtension), FileMode.Create))
+                        // Borrar imagen anterior
+                        var nuevaRutaImagen = Path.Combine(rutaPrincipal, sliderDesdeDb.UrlImagen.TrimStart('\\'));
+                        if (System.IO.File.Exists(nuevaRutaImagen))
+                            System.IO.File.Delete(nuevaRutaImagen);
+                        // Subir nueva imagen
+                        using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension), FileMode.Create))
                         {
                             archivos[0].CopyTo(fileStreams);
                         }
-                        slider.UrlImagen = @"\imagenes\sliders\" + nombreArchivo + nuevaExtension;
-                        sliderDesdeDb.UrlImagen = slider.UrlImagen;
+                        slider.UrlImagen = @"\imagenes\sliders\" + nombreArchivo + extension;
                     }
-
-                    sliderDesdeDb.Nombre = slider.Nombre;
-                    sliderDesdeDb.Estado = slider.Estado;
-
-                    _contenedorTrabajo.Slider.Update(sliderDesdeDb);
-                    _contenedorTrabajo.Save();
-                    return RedirectToAction(nameof(Index));
+                    else
+                    {
+                        // Subir nueva imagen
+                        using (var fileStreams = new FileStream(Path.Combine(subidas, nombreArchivo + extension), FileMode.Create))
+                        {
+                            archivos[0].CopyTo(fileStreams);
+                        }
+                        slider.UrlImagen = @"\imagenes\sliders\" + nombreArchivo + extension;
+                    }
                 }
+                else
+                {
+                    // No hay imagen
+                    slider.UrlImagen = sliderDesdeDb.UrlImagen;
+                }
+
+                slider.Estado = sliderDesdeDb.Estado;
+                _contenedorTrabajo.Slider.Update(slider);
+                _contenedorTrabajo.Save();
+                return RedirectToAction(nameof(Index));
             }
             return View(slider);
         }
@@ -147,21 +163,28 @@ namespace BlogCore.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var objDesdeDb = _contenedorTrabajo.Slider.Get(id);
-            if (objDesdeDb == null)
+            var sliderDesdeDb = _contenedorTrabajo.Slider.Get(id);
+            if (sliderDesdeDb == null)
                 return Json(new { success = false, message = "Error borrando slider" });
 
             string rutaPrincipal = _hostEnvironment.WebRootPath;
-            var rutaImagen = Path.Combine(rutaPrincipal, objDesdeDb.UrlImagen.TrimStart('\\'));
-
-            if (System.IO.File.Exists(rutaImagen))
+            if (sliderDesdeDb.UrlImagen != @"\imagenes\sliders\default.png") // Si no es la imagen por defecto
             {
-                System.IO.File.Delete(rutaImagen);
-            }
+                // Borrar imagen anterior
+                var nuevaRutaImagen = Path.Combine(rutaPrincipal, sliderDesdeDb.UrlImagen.TrimStart('\\'));
+                if (System.IO.File.Exists(nuevaRutaImagen))
+                    System.IO.File.Delete(nuevaRutaImagen);
 
-            _contenedorTrabajo.Slider.Remove(objDesdeDb);
-            _contenedorTrabajo.Save();
-            return Json(new { success = true, message = "Slider borrado correctamente" });
+                _contenedorTrabajo.Slider.Remove(sliderDesdeDb);
+                _contenedorTrabajo.Save();
+                return Json(new { success = true, message = "Slider borrado correctamente" });
+            }
+            else
+            {
+                _contenedorTrabajo.Slider.Remove(sliderDesdeDb);
+                _contenedorTrabajo.Save();
+                return Json(new { success = true, message = "Slider borrado correctamente" });
+            }
         }
         #endregion
 
