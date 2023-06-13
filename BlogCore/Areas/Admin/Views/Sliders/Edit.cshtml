@@ -10,18 +10,20 @@
                 <input type="hidden" asp-for="Id" />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="col-md-8">
-                    <label asp-for="Nombre" class="form-label"></label>
-                    <input asp-for="Nombre" class="form-control border border-secondary" placeholder="Nombre de la categoria" required />
-                    <span asp-validation-for="Nombre" class="text-danger"></span>
-                </div>
+                    <div class="col-md-12">
+                        <label asp-for="Nombre" class="form-label"></label>
+                        <input asp-for="Nombre" class="form-control border border-secondary" placeholder="Nombre de la categoria" required />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-12">
+                        <label asp-for="UrlImagen" class="form-label"></label>
+                        <input type="file" id="subidaArchivo" name="subidaArchivo" class="form-control border border-secondary" />
+                        <span asp-validation-for="UrlImagen" class="text-danger"></span>
+                    </div>
+                </div>                
                 <div class="col-md-4">
-                    <label asp-for="UrlImagen" class="form-label"></label>
-                    <input type="file" id="subidaArchivo" name="subidaArchivo" class="form-control border border-secondary" />
-                    <span asp-validation-for="UrlImagen" class="text-danger"></span>
-                </div>
-                <div class="col-md-12">
                     <label for="Preview" class="form-label">Preview</label>
-                    <img id="previewImagen" src="@Model.UrlImagen" class="img-fluid" alt="Preview" />
+                    <img src="@Model.UrlImagen" id="previewImagen" width="100%" style="border-radius: 5px; border: 1px solid #ccc; padding: 5px;" alt="Preview" /> 
                 </div>
                 <div class="col-md-12">
                     <a asp-action="Index" class="btn btn-secondary float-end">Cancelar</a>
@@ -33,6 +35,7 @@
 </div>
 
 @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         // Función para actualizar la imagen de preview
         function actualizarPreviewImagen(input) {
