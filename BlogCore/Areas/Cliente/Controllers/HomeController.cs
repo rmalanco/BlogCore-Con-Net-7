@@ -26,6 +26,17 @@ public class HomeController : Controller
         };
         return View(homeViewModel);
     }
+
+    public IActionResult Details(int? id)
+    {
+        if (id == null || id == 0)
+            return RedirectToAction("Index", "Home");
+        var articulo = _contenedorTrabajo.Articulo.GetFirstOrDefault(a => a.Id == id, includeProperties: "Categoria");
+        if (articulo == null)
+            return RedirectToAction("Index", "Home");
+        return View(articulo);
+    }
+
     #endregion
 
     #region Api llamadas

@@ -50,13 +50,13 @@
                         "render": function (data) {
                             if (data == true) {
                                 return `<div class="text-center">
-                                            <i class="fas fa-check-circle text-success"></i>
-                                        </div>`;
+                                                <i class="fas fa-check-circle text-success"></i>
+                                            </div>`;
                             }
                             else {
                                 return `<div class="text-center">
-                                            <i class="fas fa-times-circle text-danger"></i>
-                                        </div>`;
+                                                <i class="fas fa-times-circle text-danger"></i>
+                                            </div>`;
                             }
                         }, "width": "5%"
                     },
@@ -64,16 +64,16 @@
                         "data": "id",
                         "render": function (data) {
                             return `<div class="text-center">
-                                        <a href="/admin/sliders/edit/${data}" class="btn btn-success text-white" style="width: 100px;">
-                                            <i class="fas fa-edit"></i> Editar
-                                        </a>
-                                        <a onclick=Delete("/admin/sliders/delete/${data}") class="btn btn-danger text-white" style="width: 100px;">
-                                            <i class="fas fa-trash-alt"></i> Eliminar
-                                        </a>
-                                        <a onclick=CambiarEstado("/admin/sliders/cambiarestado/${data}") class="btn btn-warning text-white" style="width: 200px;">
-                                            <i class="fas fa-exchange-alt"></i> Cambiar Estado
-                                        </a>
-                                    </div>`;
+                                            <a href="/admin/sliders/edit/${data}" class="btn btn-success text-white" style="width: 100px;">
+                                                <i class="fas fa-edit"></i> Editar
+                                            </a>
+                                            <a onclick=Delete("/admin/sliders/delete/${data}") class="btn btn-danger text-white" style="width: 100px;">
+                                                <i class="fas fa-trash-alt"></i> Eliminar
+                                            </a>
+                                            <a onclick=CambiarEstado("/admin/sliders/cambiarestado/${data}") class="btn btn-warning text-white" style="width: 200px;">
+                                                <i class="fas fa-exchange-alt"></i> Cambiar Estado
+                                            </a>
+                                        </div>`;
                         }, "width": "30%"
                     }
                 ],

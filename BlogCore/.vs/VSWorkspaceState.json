@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\Areas",
+    "\\Areas\\Admin",
+    "\\Areas\\Admin\\Controllers",
+    "\\Areas\\Admin\\Views",
+    "\\Areas\\Admin\\Views\\Articulos",
+    "\\Areas\\Admin\\Views\\Categorias",
+    "\\Areas\\Admin\\Views\\Sliders",
+    "\\Views",
+    "\\Views\\Shared"
+  ],
+  "SelectedNode": "\\Views\\Shared\\_Layout.cshtml",
+  "PreviewInSolutionExplorer": false
+}

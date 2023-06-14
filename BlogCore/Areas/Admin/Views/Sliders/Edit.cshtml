@@ -20,10 +20,10 @@
                         <input type="file" id="subidaArchivo" name="subidaArchivo" class="form-control border border-secondary" />
                         <span asp-validation-for="UrlImagen" class="text-danger"></span>
                     </div>
-                </div>                
+                </div>
                 <div class="col-md-4">
                     <label for="Preview" class="form-label">Preview</label>
-                    <img src="@Model.UrlImagen" id="previewImagen" width="100%" style="border-radius: 5px; border: 1px solid #ccc; padding: 5px;" alt="Preview" /> 
+                    <img src="@Model.UrlImagen" id="previewImagen" width="100%" style="border-radius: 5px; border: 1px solid #ccc; padding: 5px;" alt="Preview" />
                 </div>
                 <div class="col-md-12">
                     <a asp-action="Index" class="btn btn-secondary float-end">Cancelar</a>

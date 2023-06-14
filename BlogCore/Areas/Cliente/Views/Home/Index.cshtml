@@ -4,59 +4,60 @@
 }
 <div class="row mt-1">
     <div class="col-md-12">
-      <h1 class="display-4 text-center">Últimos Cursos y Tutoriales</h1>  
+        <h1 class="display-4 text-center">Últimos Cursos y Tutoriales</h1>
     </div>
 </div>
 
 @if(Model.Slider.Count() > 0){
-  <div id="carouselSliders" class="carousel slide">
+<div id="carouselSliders" class="carousel slide">
     <div class="carousel-inner">
-      @foreach (var items in Model.Slider.OrderBy(o => o.Id))
-      {
-        int index = Model.Slider.OrderBy(o => o.Id).ToList().IndexOf(items);
-        <div class="carousel-item @(index == 0 ? "active" : "")">
-          <img src="@items.UrlImagen" class="d-block w-100" alt="@items.Nombre">
-          <div class="carousel-caption text-start">
-            <h5>@items.Nombre</h5>
-          </div>
-        </div>
-      }
+        @foreach (var items in Model.Slider.OrderBy(o => o.Id).Where(s => s.Estado == true))
+        {
+            int index = Model.Slider.OrderBy(o => o.Id).ToList().IndexOf(items);
+            <div class="carousel-item @(index == 0 ? "active" : "")">
+                <img src="@items.UrlImagen" class="d-block w-100" alt="@items.Nombre">
+                <div class="carousel-caption d-none d-md-block bg-dark rounded p-3 text-white">
+                <h5>@items.Nombre</h5>
+                </div>
+            </div>
+        }
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselSliders" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Anterior</span>
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
     </button>
     <button class="carousel-control-next" type="button" data-bs-target="#carouselSliders" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Siguiente</span>
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Siguiente</span>
     </button>
-  </div>  
+</div>
 } else {
-  <div class="alert alert-warning" role="alert">
+<div class="alert alert-warning" role="alert">
     No hay sliders para mostrar
-  </div>
+</div>
 }
 
 <div class="row mt-1">
-  <div class="col-md-12">
-    <h1 class="display-4 text-center">Lista de Cursos y Tutoriales</h1>
-  </div>
+    <div class="col-md-12">
+        <h1 class="display-4 text-center">Lista de Cursos y Tutoriales</h1>
+    </div>
 </div>
 
 <div class="row">
-  <div class="btn-group" role="group" aria-label="Botones de categorías">
-    @if(Model.ListaCategorias.Count() > 0){
-      <button type="button" class="btn btn-primary" onclick="TodoslosArticulos()">Todos</button>
-      @foreach (var items in Model.ListaCategorias.OrderBy(o => o.Nombre).Take(5))
-      {
-        <button type="button" class="btn btn-primary" onclick="ArticulosPorCategoria(@items.Id)">@items.Nombre</button>
-      }
-    } else {
-      <div class="alert alert-warning" role="alert">
-        No hay categorías para mostrar
-      </div>
-    }
-  </div>
+    <div class="btn-group" role="group" aria-label="Botones de categorías">
+        @if(Model.ListaCategorias.Count() > 0)
+        {
+            <button type="button" class="btn btn-primary" onclick="TodoslosArticulos()">Todos</button>
+            foreach (var items in Model.ListaCategorias.OrderBy(o => o.Nombre).Take(5))
+            {
+                <button type="button" class="btn btn-primary" onclick="ArticulosPorCategoria(@items.Id)">@items.Nombre</button>
+            }
+        } else {
+            <div class="alert alert-warning" role="alert">
+                No hay categorías para mostrar
+            </div>
+        }
+    </div>
 </div>
 
 <div id="listaArticulos" class="row mt-1 mb-1" name="listaArticulos">
@@ -66,68 +67,68 @@
 @section Scripts{
     <script>
         $(document).ready(function () {
-          $('#carouselSliders').carousel({
-              interval: 3000 // Cambia cada 3 segundos (ajusta este valor según tus necesidades)
-          });
-          TodoslosArticulos();
+            $('#carouselSliders').carousel({
+                interval: 3000 // Cambia cada 3 segundos (ajusta este valor según tus necesidades)
+            });
+            TodoslosArticulos();
         });
 
         function TodoslosArticulos() {
-          $.ajax({
-            type: "GET",
-            url: "/Cliente/Home/GetArticulos",
-            data: { id: 0 },
-            success: function (data) {
-              let articulos = data.data;
-              let html = '';
-              articulos.forEach(element => {
-                html += '<div class="col-md-3">';
-                html += '<div class="card mb-4 shadow-sm">';
-                html += '<img src="' + element.urlImagen + '" class="bd-placeholder-img card-img-top" width="100%" height="225" alt="' + element.nombre + '">';
-                html += '<div class="card-body">';
-                html += '<h5 class="card-title">' + element.nombre + '</h5>';
-                html += '<p class="card-text">' + element.descripcion + '</p>';
-                html += '<a href="/Cliente/Home/Articulo/' + element.id + '" class="btn btn-sm btn-outline-secondary">Ver más</a>';
-                html += '</div>';
-                html += '</div>';
-                html += '</div>';
-                html += '</div>';
-              });
-              $('#listaArticulos').html(html);
-            }
-          });
+            $.ajax({
+                type: "GET",
+                url: "/Cliente/Home/GetArticulos",
+                data: { id: 0 },
+                success: function (data) {
+                    let articulos = data.data;
+                    let html = '';
+                    articulos.forEach(element => {
+                        html += '<div class="col-md-3">';
+                        html += '<div class="card mb-4 shadow-sm">';
+                        html += '<img src="' + element.urlImagen + '" class="bd-placeholder-img card-img-top" width="100%" height="225" alt="' + element.nombre + '">';
+                        html += '<div class="card-body">';
+                        html += '<h5 class="card-title">' + element.nombre + '</h5>';
+                        html += '<p class="card-text">' + element.descripcion + '</p>';
+                        html += '<a href="/Cliente/Home/Details/' + element.id + '" class="btn btn-sm btn-outline-secondary">Ver más</a>';
+                        html += '</div>';
+                        html += '</div>';
+                        html += '</div>';
+                        html += '</div>';
+                    });
+                    $('#listaArticulos').html(html);
+                }
+            });
         }
 
         function ArticulosPorCategoria(id) {
-          $.ajax({
-            type: "POST",
-            url: "/Cliente/Home/GetArticuloByCategoria",
-            data: { id: id },
-            success: function (data) {
-              let articulos = data.data;
-              let html = '';
-              if (articulos.length > 0) {
-                articulos.forEach(element => {
-                  html += '<div class="col-md-3">';
-                  html += '<div class="card mb-4 shadow-sm">';
-                  html += '<img src="' + element.urlImagen + '" class="bd-placeholder-img card-img-top" width="100%" height="225" alt="' + element.nombre + '">';
-                  html += '<div class="card-body">';
-                  html += '<h5 class="card-title">' + element.nombre + '</h5>';
-                  html += '<p class="card-text">' + element.descripcion + '</p>';
-                  html += '<a href="/Cliente/Home/Articulo/' + element.id + '" class="btn btn-sm btn-outline-secondary">Ver más</a>';
-                  html += '</div>';
-                  html += '</div>';
-                  html += '</div>';
-                  html += '</div>';
-                });
-              } else {
-                html += '<div class="alert alert-warning" role="alert">';
-                html += 'No hay artículos para mostrar';
-                html += '</div>';
-              }
-              $('#listaArticulos').html(html);
-            }
-          });
+            $.ajax({
+                type: "POST",
+                url: "/Cliente/Home/GetArticuloByCategoria",
+                data: { id: id },
+                success: function (data) {
+                    let articulos = data.data;
+                    let html = '';
+                    if (articulos.length > 0) {
+                        articulos.forEach(element => {
+                            html += '<div class="col-md-3">';
+                            html += '<div class="card mb-4 shadow-sm">';
+                            html += '<img src="' + element.urlImagen + '" class="bd-placeholder-img card-img-top" width="100%" height="225" alt="' + element.nombre + '">';
+                            html += '<div class="card-body">';
+                            html += '<h5 class="card-title">' + element.nombre + '</h5>';
+                            html += '<p class="card-text">' + element.descripcion + '</p>';
+                            html += '<a href="/Cliente/Home/Details/' + element.id + '" class="btn btn-sm btn-outline-secondary">Ver más</a>';
+                            html += '</div>';
+                            html += '</div>';
+                            html += '</div>';
+                            html += '</div>';
+                        });
+                    } else {
+                        html += '<div class="alert alert-warning" role="alert">';
+                        html += 'No hay artículos para mostrar';
+                        html += '</div>';
+                    }
+                    $('#listaArticulos').html(html);
+                }
+            });
         }
     </script>
 }
