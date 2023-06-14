@@ -10,11 +10,9 @@ namespace BlogCore.Areas.Admin.Controllers
     public class CategoriasController : Controller
     {
         private readonly IContenedorTrabajo _contenedorTrabajo;
-        private readonly IWebHostEnvironment _hostEnvironment;
-        public CategoriasController(IContenedorTrabajo contenedorTrabajo, IWebHostEnvironment _hostEnvironment)
+        public CategoriasController(IContenedorTrabajo contenedorTrabajo)
         {
             _contenedorTrabajo = contenedorTrabajo;
-            this._hostEnvironment = _hostEnvironment;
         }
 
         #region llamadas a la vista

@@ -1,32 +1,63 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using BlogCore.Models;
+using BlogCore.AccesoDatos.Data.Repository.IRepository;
+using BlogCore.Models.ViewModels;
 
 namespace BlogCore.Areas.Cliente.Controllers;
 
 [Area("Cliente")]
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly IContenedorTrabajo _contenedorTrabajo;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(IContenedorTrabajo contenedorTrabajo)
     {
-        _logger = logger;
+        _contenedorTrabajo = contenedorTrabajo;
     }
-
+    #region Vistas principales
     public IActionResult Index()
     {
-        return View();
+        HomeViewModel homeViewModel = new()
+        {
+            Slider = _contenedorTrabajo.Slider.GetAll(),
+            ListaArticulos = _contenedorTrabajo.Articulo.GetAll(),
+            ListaCategorias = _contenedorTrabajo.Categoria.GetAll()
+        };
+        return View(homeViewModel);
     }
+    #endregion
 
-    public IActionResult Privacy()
+    #region Api llamadas
+    [HttpGet]
+    public IActionResult GetArticulos()
     {
-        return View();
+        return Json(new
+        {
+            data = _contenedorTrabajo.Articulo.GetAll(
+            includeProperties: "Categoria"
+        )
+        });
     }
 
+    [HttpPost]
+    public IActionResult GetArticuloByCategoria(int id)
+    {
+        return Json(new
+        {
+            data = _contenedorTrabajo.Articulo.GetAll(
+                a => a.CategoriaId == id,
+                includeProperties: "Categoria"
+            )
+        });
+    }
+    #endregion
+
+    #region Error
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+    #endregion
 }

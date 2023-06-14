@@ -34,16 +34,15 @@ namespace BlogCore.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if (id == null || id == 0)
-                return NotFound();
-
-            var slider = _contenedorTrabajo.Slider.Get(id.GetValueOrDefault());
-            if (slider == null)
-                return NotFound();
-
-            return View(slider);
+            if (id != null && id != 0)
+            {
+                var slider = _contenedorTrabajo.Slider.Get(id.GetValueOrDefault());
+                if (slider == null)
+                    return NotFound();
+                return View(slider);
+            }
+            return RedirectToAction(nameof(Index));
         }
-
         #endregion
 
         #region llamadas al controlador
@@ -158,6 +157,20 @@ namespace BlogCore.Areas.Admin.Controllers
         public IActionResult GetAll()
         {
             return Json(new { data = _contenedorTrabajo.Slider.GetAll() });
+        }
+
+        [HttpPost]
+        public IActionResult CambiarEstado(int id)
+        {
+            var sliderDesdeDb = _contenedorTrabajo.Slider.Get(id);
+            if (sliderDesdeDb == null)
+                return Json(new { success = false, message = "Error cambiando el estado del slider" });
+
+            sliderDesdeDb.Estado = !sliderDesdeDb.Estado;
+
+            _contenedorTrabajo.Slider.Update(sliderDesdeDb);
+            _contenedorTrabajo.Save();
+            return Json(new { success = true, message = "Estado cambiado correctamente" });
         }
 
         [HttpDelete]

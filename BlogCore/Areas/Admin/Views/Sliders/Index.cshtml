@@ -44,7 +44,7 @@
                 },
                 "columns": [
                     { "data": "id", "width": "5%" },
-                    { "data": "nombre", "width": "80%" },
+                    { "data": "nombre", "width": "60%" },
                     {
                         "data": "estado",
                         "render": function (data) {
@@ -64,15 +64,17 @@
                         "data": "id",
                         "render": function (data) {
                             return `<div class="text-center">
-                                        <a href="/admin/sliders/edit/${data}" class="btn btn-success text-white" style="cursor:pointer; width:100px;">
+                                        <a href="/admin/sliders/edit/${data}" class="btn btn-success text-white" style="width: 100px;">
                                             <i class="fas fa-edit"></i> Editar
                                         </a>
-                                        &nbsp;
-                                        <a onclick=Delete("/admin/sliders/delete/${data}") class="btn btn-danger text-white" style="cursor:pointer; width:100px;">
+                                        <a onclick=Delete("/admin/sliders/delete/${data}") class="btn btn-danger text-white" style="width: 100px;">
                                             <i class="fas fa-trash-alt"></i> Eliminar
                                         </a>
+                                        <a onclick=CambiarEstado("/admin/sliders/cambiarestado/${data}") class="btn btn-warning text-white" style="width: 200px;">
+                                            <i class="fas fa-exchange-alt"></i> Cambiar Estado
+                                        </a>
                                     </div>`;
-                        }, "width": "15%"
+                        }, "width": "30%"
                     }
                 ],
                 "language": {
@@ -106,6 +108,32 @@
             }, function () {
                 $.ajax({
                     type: 'DELETE',
+                    url: url,
+                    success: function (data) {
+                        if (data.success) {
+                            toastr.success(data.message);
+                            $('#tblSliders').DataTable().ajax.reload();
+                        }
+                        else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+            });
+        }
+
+        function CambiarEstado(url) {
+            swal({
+                title: "¿Estas seguro de cambiar el estado?",
+                text: "Este registro cambiará su estado",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Si, cambiar",
+                closeOnconfirm: true
+            }, function () {
+                $.ajax({
+                    type: 'POST',
                     url: url,
                     success: function (data) {
                         if (data.success) {
