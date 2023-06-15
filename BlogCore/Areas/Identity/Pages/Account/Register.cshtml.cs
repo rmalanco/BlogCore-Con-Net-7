@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using BlogCore.Utilidades;
 
 namespace BlogCore.Areas.Identity.Pages.Account
 {
@@ -29,6 +30,7 @@ namespace BlogCore.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
+         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
         // private readonly IEmailSender _emailSender;
 
@@ -36,7 +38,8 @@ namespace BlogCore.Areas.Identity.Pages.Account
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger
+            ILogger<RegisterModel> logger,
+            RoleManager<IdentityRole> roleManager
             /*IEmailSender emailSender*/)
         {
             _userManager = userManager;
@@ -45,6 +48,7 @@ namespace BlogCore.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             // _emailSender = emailSender;
+             _roleManager = roleManager;
         }
 
         /// <summary>
@@ -114,9 +118,12 @@ namespace BlogCore.Areas.Identity.Pages.Account
 
             [Required(ErrorMessage = "El país es obligatorio")]
             public string Pais { get; set; }
+
+            /// <summary>
+            /// Roles de usuario
+            /// </summary>
+            public string Role { get; set; }
         }
-
-
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -144,6 +151,26 @@ namespace BlogCore.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    // validar si el rol existe administador
+                    if (!await _roleManager.RoleExistsAsync(ConstantsAuth.AdminRole))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(ConstantsAuth.AdminRole));
+                    }
+                    // validar si el rol existe usuario
+                    if (!await _roleManager.RoleExistsAsync(ConstantsAuth.UserRole))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole(ConstantsAuth.UserRole));
+                    }
+
+                    if (string.IsNullOrEmpty(Input.Role))
+                    {
+                        await _userManager.AddToRoleAsync(user, ConstantsAuth.UserRole);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
+
                     _logger.LogInformation("User created a new account with password.");
 
                     // var userId = await _userManager.GetUserIdAsync(user);
