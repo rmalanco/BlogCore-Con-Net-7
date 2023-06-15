@@ -10,7 +10,7 @@ namespace BlogCore.AccesoDatos.Data.Repository.IRepository
         ICategoriaRepository Categoria { get; }
         IArticuloRepository Articulo { get; }
         ISliderRepository Slider { get; }
-        // IUsuarioRepository Usuario { get; }
+        IUsuarioRepository Usuario { get; }
         // IComentarioRepository Comentario { get; }
         // ICarritoCompraRepository CarritoCompra { get; }
         // IOrdenCompraRepository OrdenCompra { get; }

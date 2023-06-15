@@ -119,6 +119,10 @@ namespace BlogCore.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "El país es obligatorio")]
             public string Pais { get; set; }
 
+            [Required(ErrorMessage = "El teléfono es obligatorio")]
+            [Display(Name = "Teléfono")]
+            public string PhoneNumber { get; set; }
+
             /// <summary>
             /// Roles de usuario
             /// </summary>
@@ -143,6 +147,7 @@ namespace BlogCore.Areas.Identity.Pages.Account
                 user.Ciudad = Input.Ciudad;
                 user.Pais = Input.Pais;
                 user.EmailConfirmed = true;
+                user.PhoneNumber = Input.PhoneNumber;
                 //-------------------------------------
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
