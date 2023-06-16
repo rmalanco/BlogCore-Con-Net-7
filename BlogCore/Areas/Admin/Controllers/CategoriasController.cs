@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using BlogCore.Data;
 using BlogCore.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
+using BlogCore.Utilidades;
 
 namespace BlogCore.Areas.Admin.Controllers
 {
+    [Authorize(Roles = ConstantsAuth.AdminRole)]
     [Area("Admin")]
     public class CategoriasController : Controller
     {
@@ -96,6 +99,7 @@ namespace BlogCore.Areas.Admin.Controllers
         #endregion
 
         #region llamadas a la api
+        // [AllowAnonymous] // para permitir que se pueda acceder a la api sin estar logueado
         [HttpGet]
         public IActionResult GetAll()
         {

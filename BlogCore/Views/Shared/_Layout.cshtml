@@ -1,4 +1,5 @@
 ﻿@using BlogCore.Helpers
+@using BlogCore.Utilidades
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,21 +23,24 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Contenidos
-                            </a>
-                            <ul class="dropdown-menu bg-white" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Categorias" asp-action="Index">Categorías</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Articulos" asp-action="Index">Artículos</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Sliders" asp-action="Index">Sliders</a></li>
-                                <li><a class="dropdown-item" asp-area="Admin" asp-controller="Usuarios" asp-action="Index">Usuarios</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
+                    @if (User.IsInRole(ConstantsAuth.AdminRole))
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Contenidos
+                                </a>
+                                <ul class="dropdown-menu bg-white" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Categorias" asp-action="Index">Categorías</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Articulos" asp-action="Index">Artículos</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Sliders" asp-action="Index">Sliders</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Usuarios" asp-action="Index">Usuarios</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    }
                 </div>
+                <partial name="_LoginPartial" />
             </div>
         </nav>
     </header>

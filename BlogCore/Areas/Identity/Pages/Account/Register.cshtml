@@ -53,17 +53,19 @@
                 <label asp-for="Input.ConfirmPassword">Confirmar Password</label>
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <!-- Selector de roles -->
-            <div class="form-floating mb-3">
-                <!--Roles de ConstantsAuth -->
-                <select asp-for="Input.Role" class="form-control" aria-required="true" placeholder="Rol">
-                    <option value="">Seleccione un rol</option>
-                    <option value="@ConstantsAuth.AdminRole">@ConstantsAuth.AdminRole</option>
-                    <option value="@ConstantsAuth.UserRole">@ConstantsAuth.UserRole</option>
-                </select>
-                <label asp-for="Input.Role">Rol</label>
-                <span asp-validation-for="Input.Role" class="text-danger"></span>
-            </div>
+            @if (User.IsInRole(ConstantsAuth.AdminRole))
+            {
+                @* Selector de roles *@
+                <div class="form-floating mb-3">
+                    <select asp-for="Input.Role" class="form-control" aria-required="true" placeholder="Rol">
+                        <option value="">Seleccione un rol</option>
+                        <option value="@ConstantsAuth.AdminRole">@ConstantsAuth.AdminRole</option>
+                        <option value="@ConstantsAuth.UserRole">@ConstantsAuth.UserRole</option>
+                    </select>
+                    <label asp-for="Input.Role">Rol</label>
+                    <span asp-validation-for="Input.Role" class="text-danger"></span>
+                </div>
+            }
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Registrar</button>
         </form>
     </div>

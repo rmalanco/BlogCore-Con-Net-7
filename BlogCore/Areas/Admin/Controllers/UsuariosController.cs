@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 using BlogCore.AccesoDatos.Data.Repository.IRepository;
 using BlogCore.Models;
 using BlogCore.Models.ViewModels;
+using BlogCore.Utilidades;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace BlogCore.Areas.Admin.Controllers
 {
+    [Authorize(Roles = ConstantsAuth.AdminRole)]
     [Area("Admin")]
     public class UsuariosController : Controller
     {
