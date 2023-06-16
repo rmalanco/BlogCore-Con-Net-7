@@ -26,32 +26,11 @@
                                 <th>Nombre</th>
                                 <th>Correo</th>
                                 <th>Teléfono</th>
+                                <th>Rol</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var user in Model)
-                            {
-                                <tr>
-                                    <td>@user.UserName</td>
-                                    <td>@user.Email</td>
-                                    <td>@user.PhoneNumber</td>
-                                    <td>
-                                        @if (user.LockoutEnd != null && user.LockoutEnd > DateTime.Now) // Si el usuario está bloqueado
-                                        {
-                                            <a asp-action="Desbloquear" asp-route-id="@user.Id" class="btn btn-success text-white">
-                                                <i class="fas fa-unlock"></i> Desbloquear
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <a asp-action="Bloquear" asp-route-id="@user.Id" class="btn btn-danger text-white">
-                                                <i class="fas fa-lock"></i> Bloquear
-                                            </a>
-                                        }
-                                    </td>
-                                </tr>
-                            }
                         </tbody>
                     </table>
                 }
@@ -64,3 +43,156 @@
         </div>
     </div>
 </div>
+
+@if (Model.Count() > 0)
+{
+    @section Scripts{
+        <script>
+            $(document).ready(function () {
+                $('#tblUsuarios').DataTable({
+                "ajax": {
+                    "url": "/Admin/Usuarios/getusuarios",
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "nombre", "width": "20%" },
+                    { "data": "email", "width": "20%" },
+                    { "data": "phoneNumber", "width": "20%" },
+                    { 
+                        "data": "roles",
+                        "render": function (data) {
+                            var roleNames = data.map(function (rol) {
+                                return rol.nombre;
+                                }).join(", ");
+                            return roleNames;
+                            }, "width": "20%" },
+                    {
+                        "data": "id",
+                        "render": function (data, type, row) {
+                            // Validar la condición LockoutEnd
+                            if (row.lockoutEnd != null && new Date(row.lockoutEnd) > new Date()) {
+                                // Usuario bloqueado - mostrar botón "Desbloquear"
+                                return `<div class="text-center">
+                                            <a onclick=Desbloquear("/Admin/Usuarios/Desbloquear/${data}") class="btn btn-success text-white" style="cursor:pointer">
+                                                <i class="fas fa-unlock"></i> Desbloquear
+                                            </a>
+                                        </div>`;
+                            } else {
+                                // Usuario no bloqueado - mostrar botón "Bloquear"
+                                return `<div class="text-center">
+                                            <a onclick=Bloquear("/Admin/Usuarios/Bloquear/${data}") class="btn btn-danger text-white" style="cursor:pointer">
+                                                <i class="fas fa-lock"></i> Bloquear
+                                            </a>
+                                        </div>`;
+                            }
+                        },
+                        "width": "20%"
+                    }
+                ],
+                "language": {
+                    "emptyTable": "No hay registros",
+                    "lengthMenu": "Mostrar _MENU_ registros por pagina",
+                    "zeroRecords": "No se encontro ningun registro",
+                    "info": "Mostrando la pagina _PAGE_ de _PAGES_",
+                    "infoEmpty": "No hay registros disponibles",
+                    "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                    "search": "Buscar:",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    },
+                },
+                "width": "100%"
+                });
+                GetUsuarios();
+            });
+            function GetUsuarios(){
+                $.ajax({
+                    type: "GET",
+                    url: "/Admin/Usuarios/getusuarios",
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            }
+            function Delete(url) {
+                swal({
+                    title: "¿Estas seguro de eliminar?",
+                    text: "Este registro no se podrá recuperar",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Si, eliminar",
+                    closeOnconfirm: true
+                }, function () {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                $('#tblCategorias').DataTable().ajax.reload();
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    });
+                });
+            }
+            function Bloquear(url) {
+                swal({
+                    title: "¿Estas seguro de bloquear?",
+                    text: "Este usuario no podrá acceder al sistema",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Si, bloquear",
+                    closeOnconfirm: true
+                }, function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                $('#tblUsuarios').DataTable().ajax.reload();
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    });
+                });
+            }
+            function Desbloquear(url) {
+                swal({
+                    title: "¿Estas seguro de desbloquear?",
+                    text: "Este usuario podrá acceder al sistema",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Si, desbloquear",
+                    closeOnconfirm: true
+                }, function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        success: function (data) {
+                            if (data.success) {
+                                toastr.success(data.message);
+                                $('#tblUsuarios').DataTable().ajax.reload();
+                            }
+                            else {
+                                toastr.error(data.message);
+                            }
+                        }
+                    });
+                });
+            }
+        </script>
+    }
+}

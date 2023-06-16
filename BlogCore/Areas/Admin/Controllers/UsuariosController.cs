@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using BlogCore.AccesoDatos.Data.Repository.IRepository;
 using BlogCore.Models;
+using BlogCore.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -25,21 +26,60 @@ namespace BlogCore.Areas.Admin.Controllers
         public IActionResult Index()
         {
             // obtener todos los usuarios
-            // return View(
-            //     _contenedorTrabajo.Usuario.GetAll()
-            // );
+            return View(
+                _contenedorTrabajo.Usuario.GetAll()
+            );
 
             // obtener todos los usuarios menos el actual
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            return View(
-                _contenedorTrabajo.Usuario.GetAll(u => u.Id != usuarioActual.Value)
-            );
+            //var claimsIdentity = (ClaimsIdentity)User.Identity;
+            //var usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            //return View(
+            //    _contenedorTrabajo.Usuario.GetAll(u => u.Id != usuarioActual.Value)
+            //);
         }
 
         // GET - Bloquear
+        // [HttpGet]
+        // // [ActionName("Bloquear")]
+        // public IActionResult Bloquear(string id)
+        // {
+        //     if (id == null || id.Trim().Length == 0)
+        //     {
+        //         return NotFound();
+        //     }
+
+        //     _contenedorTrabajo.Usuario.BloquearUsuario(id);
+        //     return RedirectToAction(nameof(Index));
+        // }
+
+        // // GET - Desbloquear
+        // [HttpGet]
+        // // [ActionName("Desbloquear")]
+        // public IActionResult Desbloquear(string id)
+        // {
+        //     if (id == null || id.Trim().Length == 0)
+        //     {
+        //         return NotFound();
+        //     }
+
+        //     _contenedorTrabajo.Usuario.DesbloquearUsuario(id);
+        //     return RedirectToAction(nameof(Index));
+        // }
+
+        #region Api llamadas
+        // GET - Api - Obtener todos los usuarios
         [HttpGet]
-        // [ActionName("Bloquear")]
+        public IActionResult GetUsuarios()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var usuarioActual = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            return Json(new
+            {
+                data = _contenedorTrabajo.Usuario.GetUsuariosRoles(u => u.Id != usuarioActual.Value)
+            });
+        }
+        // POST - Api - Bloquear usuario
+        [HttpPost]
         public IActionResult Bloquear(string id)
         {
             if (id == null || id.Trim().Length == 0)
@@ -48,12 +88,10 @@ namespace BlogCore.Areas.Admin.Controllers
             }
 
             _contenedorTrabajo.Usuario.BloquearUsuario(id);
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true, message = "Operación exitosa." });
         }
-
-        // GET - Desbloquear
-        [HttpGet]
-        // [ActionName("Desbloquear")]
+        // POST - Api - Desbloquear usuario
+        [HttpPost]
         public IActionResult Desbloquear(string id)
         {
             if (id == null || id.Trim().Length == 0)
@@ -62,8 +100,9 @@ namespace BlogCore.Areas.Admin.Controllers
             }
 
             _contenedorTrabajo.Usuario.DesbloquearUsuario(id);
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true, message = "Operación exitosa." });
         }
+        #endregion
 
         #region Llamada de error
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
